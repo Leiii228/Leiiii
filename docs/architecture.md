@@ -271,7 +271,16 @@ flowchart TB
 | `message_updated` | 有訊息被編輯或收回 | 訊息資料（新版本） |
 | `reaction_added` | 有人按了表情 | 表情回應資料 |
 | `reaction_removed` | 有人取消表情 | 表情回應資料 |
-| `kicked_nickname_conflict` | 很少見：兩個人幾乎同時用同一個代號進來，比較晚的那個人會收到這個事件 | — |
+| `kicked_nickname_conflict` | 很少見：兩個人幾乎同時用同一個代號進來，比較晚的那個人會收到這個事件；或是斷線期間代號被別人拿走 | `reason`：`conflict`（同時進來）／`taken_while_away`（離開時被拿走） |
+| `member_away_changed` | 有人斷線但還在 1 分鐘寬限內（暫離），或在寬限內回來了 | `userId`、`away`（true／false） |
+
+> **階段一實作時補充的約定**（程式在 `src/chat/types.ts`、`src/chat/ChatService.ts`）：
+> - 新增 `member_away_changed` 事件，線上名單才能顯示「暫離」。`members_synced` 也會附上目前暫離的人。
+> - `kicked_nickname_conflict` 加上 `reason`，畫面才知道要顯示哪一句錯誤訊息。
+> - 送出訊息時，訊息編號由前端先產生，伺服器沿用同一個編號，「傳送中」的泡泡才對得起來。
+> - 圖片的實際網址用 `imageUrl(image)` 換算，畫面不需要知道圖片存在哪裡。
+> - `storedNickname()` 讓畫面知道這個分頁之前有沒有進來過（重新整理後直接回到聊天室）。
+> - 錯誤代碼另外加了 `EMPTY`（沒有內容）、`IMAGE_UNSUPPORTED`（不支援的檔案）、`SEND_FAILED`（傳送失敗）。
 
 **1 分鐘寬限要由誰處理？** 由連線那一塊處理。Supabase 的 Presence 一斷線就會通知「某人離開了」，`SupabaseChatService` 收到後先等 60 秒。60 秒內同一個 `userId` 回來的話，就當作沒發生過。超過 60 秒才對畫面發出 `member_left`。這樣畫面層完全不用知道寬限這件事，假伺服器也照同樣的方式模擬。
 

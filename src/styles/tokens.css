@@ -1,0 +1,59 @@
+/* 設計變數：數值來自 docs/design.md 第 2 節 */
+:root {
+  --color-bg: #FAF5EE;
+  --color-surface: #FFFFFF;
+  --color-surface-warm: #FDF3E8;
+  --color-line: #EADFD2;
+  --color-line-strong: #E2D3C3;
+  --color-text: #3A2E28;
+  --color-text-muted: #76665B;
+  --color-text-soft: #5E4F45;
+  --color-name: #6B4A1F;
+  --color-own: #F7C89B;
+  --color-own-text: #3A2618;
+  --color-primary: #5B3A29;
+  --color-on-primary: #FFFFFF;
+  --color-disabled-bg: #E4D8CB;
+  --color-link: #8A4B1F;
+  --color-accent-ring: #E69A5C;
+  --color-accent-soft: #FDE7D1;
+  --color-pill: #F1E7DB;
+  --color-pill-text: #6E5E53;
+  --color-online: #5E9A5A;
+  --color-away: #B8A797;
+  --color-danger: #A3402F;
+  --color-danger-border: #B04A3A;
+  --color-danger-soft: #FBE2DC;
+  --color-demo-bg: #FFF1DC;
+  --color-demo-text: #6B4A1F;
+  --color-offline-bg: #F6DCCB;
+  --color-offline-text: #7A3A22;
+  --color-scrim: rgba(58, 38, 24, 0.42);
+  --color-lightbox-bg: #1F1814;
+  --color-image-placeholder: #EFE6DC;
+  --color-logo: #D6B896; /* 奶茶色 */
+  --color-placeholder-text: #8C7B6E;
+
+  --font-display: 'Huninn', 'Noto Sans TC', sans-serif;
+  --font-body: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+
+  --radius-pill: 999px;
+  --radius-bubble: 20px;
+  --radius-bubble-tip: 6px;
+  --radius-image: 14px;
+  --radius-sheet: 28px;
+  --radius-dialog: 24px;
+  --radius-menu: 16px;
+
+  --shadow-menu: 0 10px 28px rgba(58, 38, 24, 0.18);
+  --shadow-dialog: 0 16px 40px rgba(58, 38, 24, 0.25);
+  --shadow-float: 0 6px 18px rgba(91, 58, 41, 0.28);
+
+  --duration: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration: 0ms;
+  }
+}
