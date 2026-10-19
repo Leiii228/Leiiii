@@ -59,6 +59,7 @@ type Wire =
   | { t: 'hello'; member: Member }
   | { t: 'who' }
   | { t: 'bye'; userId: string }
+  | { t: 'left'; userId: string }
   | { t: 'history_request' }
   | { t: 'history'; messages: WireMessage[]; reactions: Reaction[] }
   | { t: 'message'; message: WireMessage }
@@ -187,7 +188,8 @@ export class MockChatService implements ChatService, BotHost {
   }
 
   async leave(): Promise<void> {
-    if (this.me) this.post({ t: 'bye', userId: this.me.userId });
+    // 主動離開：其他分頁馬上算離開，不等 60 秒寬限（關分頁才是 bye → 暫離）
+    if (this.me) this.post({ t: 'left', userId: this.me.userId });
     this.stopHeartbeat();
     this.me = null;
     writeSession(null);
@@ -514,6 +516,14 @@ export class MockChatService implements ChatService, BotHost {
           p.away = true;
           p.awaySince = Date.now();
           this.emit({ type: 'member_away_changed', userId: w.userId, away: true });
+        }
+        break;
+      }
+      case 'left': {
+        const p = this.presence.get(w.userId);
+        if (p) {
+          this.presence.delete(w.userId);
+          this.emit({ type: 'member_left', member: p.member });
         }
         break;
       }

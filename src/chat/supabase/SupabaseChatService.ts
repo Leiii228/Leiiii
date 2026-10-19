@@ -124,6 +124,8 @@ export class SupabaseChatService implements ChatService {
   private present = new Map<string, Member>();
   /** 斷線未滿 60 秒的人 */
   private away = new Map<string, { member: Member; timer: ReturnType<typeof setTimeout> }>();
+  /** 主動按「離開」的人：不等 60 秒寬限，而且在 Presence 真的消失前不要又當成新進來 */
+  private departed = new Set<string>();
   private firstSync = true;
 
   /** 收回時要知道有哪些圖片 */
@@ -142,6 +144,11 @@ export class SupabaseChatService implements ChatService {
 
     this.lobby = this.client.channel(LOBBY, { config: { presence: { enabled: true } } });
     this.lobby.on('presence', { event: 'sync' }, () => this.onPresenceSync());
+    // 有人主動按「離開」：馬上通知大家，不等寬限
+    this.lobby.on('broadcast', { event: 'leave' }, ({ payload }) => {
+      const userId = (payload as { userId?: string } | undefined)?.userId;
+      if (userId) this.onPeerLeft(userId);
+    });
 
     await new Promise<void>((resolve) => {
       let settled = false;
@@ -227,6 +234,10 @@ export class SupabaseChatService implements ChatService {
   }
 
   async leave(): Promise<void> {
+    // 主動離開：先告訴其他人「我是自己走的」，他們就不用等 60 秒寬限
+    if (this.me && this.lobbyReady) {
+      await this.lobby?.send({ type: 'broadcast', event: 'leave', payload: { userId: this.me.userId } });
+    }
     await this.lobby?.untrack();
     if (this.db) await this.client.removeChannel(this.db);
     this.db = null;
@@ -460,17 +471,34 @@ export class SupabaseChatService implements ChatService {
     this.emit({ type: 'kicked_nickname_conflict', reason });
   }
 
+  /** 別人主動按了「離開」：馬上算離開，不進入暫離 */
+  private onPeerLeft(userId: string): void {
+    if (userId === this.me?.userId) return;
+    this.departed.add(userId);
+    const waiting = this.away.get(userId);
+    if (waiting) clearTimeout(waiting.timer);
+    const member = this.present.get(userId) ?? waiting?.member;
+    this.away.delete(userId);
+    this.present.delete(userId);
+    if (member) this.emit({ type: 'member_left', member });
+  }
+
   /** Presence 每次變動都重新比對：誰新進來、誰斷線（先算暫離，60 秒後才算離開） */
   private onPresenceSync(): void {
     const state = this.lobby!.presenceState<Member>();
     const now = new Map<string, Member>();
+    const raw = new Set<string>();
     for (const metas of Object.values(state)) {
       for (const meta of metas) {
         if (meta.userId && meta.nickname) {
+          raw.add(meta.userId);
+          // 已經主動離開的人，Presence 可能還沒更新，先不算在線上
+          if (this.departed.has(meta.userId)) continue;
           now.set(meta.userId, { userId: meta.userId, nickname: meta.nickname, onlineSince: meta.onlineSince });
         }
       }
     }
+    for (const id of this.departed) if (!raw.has(id)) this.departed.delete(id);
 
     const before = this.present;
     this.present = now;
