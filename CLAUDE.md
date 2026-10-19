@@ -6,10 +6,11 @@
 
 先讀 `docs/architecture.md`。所有技術決定、通訊約定、畫面清單和驗證清單都在這份文件裡，需求來源是 `docs/requirements.md`。
 
-## 目前進度：階段一
+## 目前進度：階段二
 
-- 只做前端。連線用 `MockChatService`（假伺服器），**還不要接 Supabase**。
-- 畫面層和狀態層不可以直接使用 Supabase。Supabase 的程式只能放在 `src/chat/supabase/`（階段二才會建立）。
+- 前端已經接上 Supabase（專案 `chuiwkcwznetmifzyeba`，東京）。有 `VITE_SUPABASE_URL` 和 `VITE_SUPABASE_PUBLISHABLE_KEY` 時使用 `SupabaseChatService`，沒有時或網址加上 `?mock=1` 時使用 `MockChatService`（示範模式）。
+- 畫面層和狀態層不可以直接使用 Supabase。Supabase 的程式只能放在 `src/chat/supabase/`。
+- 不使用 Supabase CLI。資料庫設定在 `supabase/migrations/`、清理程式在 `supabase/functions/cleanup/`，都是在 Supabase 網頁上貼上執行或部署。改了這些檔案，要請使用者在網頁上重新執行或部署。
 
 ## 金鑰
 

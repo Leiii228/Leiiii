@@ -195,7 +195,7 @@ flowchart TB
 1. 在 supabase.com 建立專案，地區選 **Tokyo（東京）**，離台灣最近，延遲最低。
 2. 打開 **Anonymous Sign-ins**。
 3. 執行準備好的資料庫設定檔 `supabase/migrations/0001_init.sql`：建立資料表、權限規則、速度限制、Realtime 設定、Storage bucket。
-4. 部署清理程式 `cleanup`，並設定每小時執行一次。
+4. 在 Supabase 網頁上部署清理程式 `cleanup`（不使用 CLI），關掉它的 JWT 驗證，再執行 `supabase/migrations/0002_schedule.sql` 設定每小時執行一次。
 5. 把 Supabase 的網址和公開金鑰放到本機的 `.env.local` 和 GitHub 的設定裡（第 8 節）。
 6. 重新部署。
 
@@ -513,7 +513,7 @@ sequenceDiagram
 | **Publishable key**（公開金鑰，舊版叫 anon key） | `sb_publishable_…` | 讓前端可以連到 Supabase。它本身權限很小，能做什麼完全由 RLS 規則決定 | ✅ 可以，本來就是設計來放在網頁裡的 | 前端（透過環境變數） |
 | **Secret key**（秘密金鑰，舊版叫 service_role key） | `sb_secret_…` | 擁有**全部權限**，可以無視 RLS 讀、改、刪任何資料 | ❌ **絕對不行** | 只給清理程式用。Supabase 會自動提供給 Edge Function，**你不需要把它複製到任何地方** |
 | **資料庫密碼** | 建立專案時你自己設定的 | 直接連進資料庫 | ❌ 絕對不行 | 只放在你的密碼管理工具裡。這個專案的程式不會用到它 |
-| **CLEANUP_SECRET** | 一串自己產生的亂碼 | 確認「呼叫清理程式的是我們自己的排程」，不是路人 | ❌ 不行 | Supabase 的 Edge Function Secrets，以及 Supabase Vault（資料庫內建的保險箱） |
+| **CLEANUP_SECRET** | 一串由資料庫自己產生的亂碼 | 確認「呼叫清理程式的是我們自己的排程」，不是路人 | ❌ 不行 | 只存在 Supabase Vault（資料庫內建的保險箱）。由 `0002_schedule.sql` 自動產生，**沒有任何人看過**，也不需要複製到任何地方 |
 | **Supabase Access Token**（只有使用 Supabase 的命令列工具時才需要） | `sbp_…` | 讓你電腦上的工具代替你操作 Supabase | ❌ 不行 | 只放在你自己的電腦上，工具會自己保管 |
 
 **為什麼 publishable key 公開了也沒關係？** 它就像大樓的大門：任何人都可以走進大廳，但每扇房門都有自己的鎖（RLS 規則）。這個專案的規則是：
@@ -531,7 +531,7 @@ sequenceDiagram
 |---|---|
 | Project URL、Publishable key、Secret key | 建立 Supabase 專案時自動產生。在 Supabase 控制台的 **Project Settings → API Keys** 可以看到 |
 | 資料庫密碼 | 建立專案時，用 Supabase 頁面上的「Generate a password」按鈕產生，然後存進密碼管理工具 |
-| CLEANUP_SECRET | 用密碼管理工具產生一組 40 字以上的隨機密碼即可 |
+| CLEANUP_SECRET | 執行 `supabase/migrations/0002_schedule.sql` 時，資料庫自動產生一組 64 字的隨機密碼存進 Vault。清理程式需要時透過資料庫確認，排程呼叫時也直接從 Vault 讀取 |
 
 ### 8.3 放在哪裡
 
@@ -550,8 +550,7 @@ sequenceDiagram
   （打包時 GitHub Actions 會讀取這兩個值，放進網頁裡）
 
 Supabase 上（伺服器端）：
-  Edge Function Secrets：CLEANUP_SECRET
-  Vault：CLEANUP_SECRET（讓排程呼叫清理程式時帶上）
+  Vault：CLEANUP_SECRET（資料庫自己產生；排程呼叫清理程式時帶上，清理程式再請資料庫比對）
   Secret key：Supabase 自動提供給 Edge Function，不需要手動設定
 ```
 
@@ -713,7 +712,8 @@ Leiiii/
 │
 ├─ supabase/                   ── 階段二才會出現 ──
 │  ├─ migrations/
-│  │  └─ 0001_init.sql         資料表、RLS、速度限制、Storage 設定、排程
+│  │  ├─ 0001_init.sql         資料表、RLS、速度限制、即時通知、Storage 設定
+│  │  └─ 0002_schedule.sql     清理用的密碼（存在 Vault）、清理用的資料庫函式、每小時排程
 │  └─ functions/
 │     └─ cleanup/
 │        └─ index.ts           每小時清理：24 小時前的訊息和圖片、7 天前的匿名身分
