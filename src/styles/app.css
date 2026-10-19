@@ -113,7 +113,7 @@ a:hover {
 .demo-toggle {
   min-height: 32px;
   padding: 0 12px;
-  border: 1px solid #EBCB9F;
+  border: 1px solid #E3C77E;
   border-radius: var(--radius-pill);
   background: transparent;
   color: var(--color-demo-text);
@@ -731,7 +731,7 @@ a:hover {
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-pill);
-  border: 1px dashed #D3C1AE;
+  border: 1px dashed #DCC48E;
   background: transparent;
   color: var(--color-text-muted);
 }

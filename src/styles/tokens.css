@@ -1,36 +1,36 @@
 /* 設計變數：數值來自 docs/design.md 第 2 節 */
 :root {
-  --color-bg: #FAF5EE;
-  --color-surface: #FFFFFF;
-  --color-surface-warm: #FDF3E8;
-  --color-line: #EADFD2;
-  --color-line-strong: #E2D3C3;
+  --color-bg: #FFF8E8; /* 奶油色 */
+  --color-surface: #FFFDF6;
+  --color-surface-warm: #FFF1CF;
+  --color-line: #F0E2BF;
+  --color-line-strong: #E6D2A3;
   --color-text: #3A2E28;
   --color-text-muted: #76665B;
   --color-text-soft: #5E4F45;
   --color-name: #6B4A1F;
-  --color-own: #F7C89B;
-  --color-own-text: #3A2618;
+  --color-own: #F9E2A2; /* 奶油黃 */
+  --color-own-text: #3B2C12;
   --color-primary: #5B3A29;
   --color-on-primary: #FFFFFF;
-  --color-disabled-bg: #E4D8CB;
+  --color-disabled-bg: #EFE2C2;
   --color-link: #8A4B1F;
-  --color-accent-ring: #E69A5C;
-  --color-accent-soft: #FDE7D1;
-  --color-pill: #F1E7DB;
-  --color-pill-text: #6E5E53;
+  --color-accent-ring: #D9A93F;
+  --color-accent-soft: #FCEDBE;
+  --color-pill: #F5EACB;
+  --color-pill-text: #66573A;
   --color-online: #5E9A5A;
   --color-away: #B8A797;
   --color-danger: #A3402F;
   --color-danger-border: #B04A3A;
   --color-danger-soft: #FBE2DC;
-  --color-demo-bg: #FFF1DC;
+  --color-demo-bg: #FDEBB8;
   --color-demo-text: #6B4A1F;
   --color-offline-bg: #F6DCCB;
   --color-offline-text: #7A3A22;
   --color-scrim: rgba(58, 38, 24, 0.42);
   --color-lightbox-bg: #1F1814;
-  --color-image-placeholder: #EFE6DC;
+  --color-image-placeholder: #F2E8CF;
   --color-logo: #D6B896; /* 奶茶色 */
   --color-placeholder-text: #8C7B6E;
 
