@@ -6,7 +6,7 @@
 - `docs/architecture.md`：架構（技術選擇、通訊約定、畫面清單、驗證清單）
 - `docs/design.md`：畫面設計
 
-目前在**階段一**：還沒接 Supabase，網站使用示範模式（假伺服器加上機器人網友）。
+目前在**階段二**：已經接上 Supabase。沒有設定 Supabase，或網址加上 `?mock=1` 時，會使用示範模式（假伺服器加上機器人網友）。
 
 ## 在自己的電腦上執行
 
@@ -14,7 +14,7 @@
 
 ```bash
 npm install      # 第一次才需要：安裝套件
-npm run dev      # 啟動本機預覽，打開 http://localhost:5173/Leiiii/
+npm run dev      # 啟動本機預覽，打開 http://localhost:5173/anonymous-chat/
 npm run build    # 檢查型別並打包到 dist/
 npm run preview  # 預覽打包好的版本
 ```
@@ -22,7 +22,7 @@ npm run preview  # 預覽打包好的版本
 ## 部署
 
 push 到 `main` 之後，GitHub Actions 會自動打包並部署到
-<https://leiii228.github.io/Leiiii/>。
+<https://leiii228.github.io/anonymous-chat/>。
 
 第一次要先到 repo 的 **Settings → Pages → Build and deployment → Source** 選 **GitHub Actions**。
 

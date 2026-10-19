@@ -11,7 +11,7 @@
 
 一個**不用註冊、不用登入**的網頁聊天室。全世界只有**一間**聊天室，任何人拿到網址，輸入一個代號就能進來聊天。電腦和手機都可以用。
 
-網址預計是：`https://leiii228.github.io/Leiiii/`
+網址預計是：`https://leiii228.github.io/anonymous-chat/`
 
 ### 已經確定的使用者體驗
 
@@ -173,7 +173,7 @@ flowchart TB
 - **模擬斷線**：畫面角落有一個只在示範模式出現的小開關「模擬斷線」，用來測試重新連線的畫面。
 - **圖片**：選的圖片只存在你自己的瀏覽器記憶體裡，重新整理就消失。（同一台電腦的另一個分頁也看得到。）
 
-**在 GitHub Pages 上怎麼看：** 照第 12 節的方式部署之後，打開 `https://leiii228.github.io/Leiiii/` 就是示範模式。畫面最上方會有一條小提示：「示範模式：其他人是模擬的，訊息不會被保存」，避免有人以為這是真的聊天室。
+**在 GitHub Pages 上怎麼看：** 照第 12 節的方式部署之後，打開 `https://leiii228.github.io/anonymous-chat/` 就是示範模式。畫面最上方會有一條小提示：「示範模式：其他人是模擬的，訊息不會被保存」，避免有人以為這是真的聊天室。
 
 ### 4.3 階段二：接上 Supabase
 
@@ -653,7 +653,7 @@ Supabase 上（伺服器端）：
 ## 11. repo 的資料夾結構
 
 ```
-Leiiii/
+anonymous-chat/
 ├─ docs/
 │  ├─ requirements.md          需求
 │  └─ architecture.md          這份文件
@@ -721,7 +721,7 @@ Leiiii/
 ├─ index.html
 ├─ package.json                專案用了哪些套件、有哪些指令
 ├─ tsconfig.json               TypeScript 的設定
-├─ vite.config.ts              Vite 的設定（包含 GitHub Pages 的子路徑 /Leiiii/）
+├─ vite.config.ts              Vite 的設定（包含 GitHub Pages 的子路徑 /anonymous-chat/）
 ├─ .env.example                需要設定哪些環境變數（只有名稱，沒有值）
 ├─ .gitignore
 └─ README.md                   怎麼在本機執行、怎麼部署
@@ -736,7 +736,7 @@ Leiiii/
 ### 第一次設定（只做一次）
 
 1. repo → **Settings → Pages → Build and deployment → Source** 選 **GitHub Actions**。
-2. 確認 `vite.config.ts` 裡的網站路徑設成 `/Leiiii/`。因為網址是 `leiii228.github.io/Leiiii/`，不是網域的根目錄，路徑設錯的話，打開網頁會是一片空白。
+2. 確認 `vite.config.ts` 裡的網站路徑設成 `/anonymous-chat/`。因為網址是 `leiii228.github.io/anonymous-chat/`，不是網域的根目錄，路徑設錯的話，打開網頁會是一片空白。
 3. （階段二才需要）repo → **Settings → Secrets and variables → Actions → Variables** 新增 `VITE_SUPABASE_URL` 和 `VITE_SUPABASE_PUBLISHABLE_KEY`。
 4. repo → **Settings → Code security** 開啟 Secret scanning 和 Push protection。
 
@@ -767,7 +767,7 @@ flowchart LR
 ### 13.1 階段一（示範模式，在 GitHub Pages 上測）
 
 **部署**
-- [ ] 打開 `https://leiii228.github.io/Leiiii/` → 看到代號輸入畫面，不是一片空白
+- [ ] 打開 `https://leiii228.github.io/anonymous-chat/` → 看到代號輸入畫面，不是一片空白
 - [ ] 最上方有「示範模式」提示條
 - [ ] 改一個字、push → 2 分鐘內網站更新
 - [ ] 重新整理任何頁面都不會出現 404
